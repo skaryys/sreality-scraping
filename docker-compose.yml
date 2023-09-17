@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  # app
+  web:
+    image: sreality-scraping
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "postgres://user:pass@db:5432/db"
+    links:
+      - db
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: user
+      POSTGRES_DB: db
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
